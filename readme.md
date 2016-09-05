@@ -13,9 +13,9 @@ $ npm install --save instagram-analytics
 ## Usage
 
 ```js
-const instagramStats = require('instagram-analytics');
+const instagramAnalytics = require('instagram-analytics');
 
-instagramStats.users(['foobar', 'unicorn']).then(stats => {
+instagramAnalytics.users(['foobar', 'unicorn']).then(stats => {
 	console.log(stats);
 	/*
 	[{
@@ -45,7 +45,7 @@ instagramStats.users(['foobar', 'unicorn']).then(stats => {
 
 ## API
 
-### instagramStats.users(users, [options])
+### instagramAnalytics.users(users, [options])
 
 #### users
 
@@ -94,7 +94,7 @@ Default: `0`
 Minimum amount of followers.
 
 
-### instagramStats.post(id, [options])
+### instagramAnalytics.post(id, [options])
 
 #### id
 
