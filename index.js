@@ -5,6 +5,7 @@ const getEmails = require('get-emails');
 const getStream = require('get-stream');
 const got = require('got');
 const Instagram = require('instagram-screen-scrape');
+const limitSizeStream = require('limit-size-stream');
 
 const getComments = id => {
 	const stream = new Instagram.InstagramComments({post: id});
@@ -13,17 +14,7 @@ const getComments = id => {
 
 const getPosts = (user, opts) => {
 	const stream = new Instagram.InstagramPosts({username: user});
-	let count = 0;
-
-	stream.on('data', () => {
-		count++;
-
-		if (count === opts.count) {
-			stream.destroy();
-		}
-	});
-
-	return getStream.array(stream);
+	return getStream.array(limitSizeStream.obj(stream, opts.count));
 };
 
 const getUser = user => {

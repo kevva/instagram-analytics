@@ -29,7 +29,8 @@
     "get-emails": "^1.0.1",
     "get-stream": "^2.3.0",
     "got": "^6.3.0",
-    "instagram-screen-scrape": "^2.0.0"
+    "instagram-screen-scrape": "^2.0.0",
+    "limit-size-stream": "^1.0.0"
   },
   "devDependencies": {
     "ava": "*",
