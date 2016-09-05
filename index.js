@@ -99,7 +99,5 @@ module.exports.post = (id, opts) => {
 		return Promise.reject(new TypeError(`Expected a string, got ${typeof id}`));
 	}
 
-	return getComments(id)
-		.then(users => module.exports.users(users, opts))
-		.then(users => users.filter(x => x.engagement >= opts.minEngagement && x.followers >= opts.minFollowers));
+	return getComments(id).then(users => module.exports.users(users, opts));
 };
