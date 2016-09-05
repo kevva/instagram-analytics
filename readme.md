@@ -19,7 +19,6 @@ instagramAnalytics.users(['foobar', 'unicorn']).then(stats => {
 	console.log(stats);
 	/*
 	[{
-		activity: 1.23,
 		comments: 351,
 		commentsPerPost: 8,
 		description: 'A wonderful description',
@@ -32,6 +31,7 @@ instagramAnalytics.users(['foobar', 'unicorn']).then(stats => {
 		likes: 581,
 		likesPerPost: 12,
 		posts: 146,
+		postsPerDay: 1.23,
 		url: 'http://instagram.com/foobar',
 		username: 'foobar',
 		website: 'http://foobar.com'
@@ -53,7 +53,6 @@ Type: `Array`
 
 Returns a promise for an array of user stats objects with:
 
-* `activity`: Average posts per day
 * `comments`: Total number of comments
 * `commentsPerPost`: Average number of comments per post
 * `description`: User description
@@ -66,6 +65,7 @@ Returns a promise for an array of user stats objects with:
 * `likes`: Total number of likes
 * `likesPerPost`: Average number of likes per post
 * `posts`: Total number of posts
+* `postsPerDay`: Average posts per day
 * `url`: User Instagram url
 * `username`: Same username as supplied
 * `website`: User website

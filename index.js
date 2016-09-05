@@ -57,12 +57,12 @@ module.exports.users = (users, opts) => {
 	return Promise.all(users.map(x => getUser(x).then(user => getPosts(x, opts).then(posts => {
 		if (posts.length === 0) {
 			return Object.assign(user, {
-				activity: 0,
 				comments: 0,
 				commentsPerPost: 0,
 				engagement: 0,
 				likes: 0,
-				likesPerPost: 0
+				likesPerPost: 0,
+				postsPerDay: 0
 			});
 		}
 
@@ -78,12 +78,12 @@ module.exports.users = (users, opts) => {
 		}
 
 		return Object.assign(user, {
-			activity: posts.length / new DateDiff(new Date(first.time * 1000), new Date(last.time * 1000)).days(),
 			comments,
 			commentsPerPost: comments / posts.length,
 			engagement: ((comments + likes) / posts.length) / user.followers,
 			likes,
-			likesPerPost: likes / posts.length
+			likesPerPost: likes / posts.length,
+			postsPerDay: posts.length / new DateDiff(new Date(first.time * 1000), new Date(last.time * 1000)).days()
 		});
 	})))).then(users => users.filter(x => x.engagement >= opts.minEngagement && x.followers >= opts.minFollowers));
 };
