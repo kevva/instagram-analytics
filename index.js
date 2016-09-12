@@ -1,10 +1,9 @@
 'use strict';
 const arrayUniq = require('array-uniq');
 const DateDiff = require('date-diff');
-const getEmails = require('get-emails');
 const getStream = require('get-stream');
-const got = require('got');
 const Instagram = require('instagram-screen-scrape');
+const instagramUser = require('instagram-user');
 const limitSizeStream = require('limit-size-stream');
 
 const getComments = id => {
@@ -15,23 +14,6 @@ const getComments = id => {
 const getPosts = (user, opts) => {
 	const stream = new Instagram.InstagramPosts({username: user});
 	return getStream.array(limitSizeStream.obj(stream, opts.count));
-};
-
-const getUser = user => {
-	const url = `http://instagram.com/${user}/?__a=1`;
-
-	return got(url, {json: true}).then(res => ({
-		description: res.body.user.biography || '',
-		email: getEmails(res.body.user.biography || '')[0] || '',
-		followers: res.body.user.followed_by.count,
-		following: res.body.user.follows.count,
-		fullName: res.body.user.full_name,
-		id: res.body.user.id,
-		posts: res.body.user.media.count,
-		url: `http://instagram.com/${user}`,
-		username: res.body.user.username,
-		website: res.body.user.external_url || ''
-	}));
 };
 
 module.exports.users = (users, opts) => {
@@ -45,7 +27,7 @@ module.exports.users = (users, opts) => {
 		return Promise.reject(new TypeError(`Expected an array, got ${typeof users}`));
 	}
 
-	return Promise.all(users.map(x => getUser(x).then(user => getPosts(x, opts).then(posts => {
+	return Promise.all(users.map(x => instagramUser(x).then(user => getPosts(x, opts).then(posts => {
 		if (posts.length === 0) {
 			return Object.assign(user, {
 				comments: 0,
