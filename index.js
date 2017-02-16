@@ -35,7 +35,8 @@ module.exports.users = (users, opts) => {
 				engagement: 0,
 				likes: 0,
 				likesPerPost: 0,
-				postsPerDay: 0
+				postsPerDay: 0,
+				postsPerWeek: 0
 			});
 		}
 
@@ -56,7 +57,8 @@ module.exports.users = (users, opts) => {
 			engagement: ((comments + likes) / posts.length) / user.followers,
 			likes,
 			likesPerPost: likes / posts.length,
-			postsPerDay: posts.length / new DateDiff(new Date(first.time * 1000), new Date(last.time * 1000)).days()
+			postsPerDay: posts.length / new DateDiff(new Date(first.time * 1000), new Date(last.time * 1000)).days(),
+			postsPerWeek: posts.length / new DateDiff(new Date(first.time * 1000), new Date(last.time * 1000)).weeks()
 		});
 	})))).then(users => users.filter(x => x.engagement >= opts.minEngagement && x.followers >= opts.minFollowers));
 };
