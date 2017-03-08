@@ -43,5 +43,11 @@ module.exports = (user, opts) => {
 			likes,
 			posts: posts.length
 		});
-	}));
+	})).catch(err => {
+		if (err.statusCode === 404) {
+			return null;
+		}
+
+		throw err;
+	});
 };

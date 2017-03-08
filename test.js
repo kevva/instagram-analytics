@@ -14,3 +14,7 @@ test('count option', async t => {
 	const cats = await m('cats_of_instagram', {count: 40});
 	t.is(cats.posts, 40);
 });
+
+test('return null if no user is found', async t => {
+	t.is(await m('non_existing_user_foo_bar'), null);
+});
