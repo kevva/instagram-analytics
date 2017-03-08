@@ -1,42 +1,27 @@
 'use strict';
-const arrayUniq = require('array-uniq');
-const DateDiff = require('date-diff');
 const getStream = require('get-stream');
 const Instagram = require('instagram-screen-scrape');
 const instagramUser = require('instagram-user');
 const limitSizeStream = require('limit-size-stream');
+const msTo = require('ms-to');
 
-const getComments = id => {
-	const stream = new Instagram.InstagramComments({post: id});
-	return getStream.array(stream).then(res => arrayUniq(res.map(x => x.username)));
-};
+const getPosts = (user, count) => getStream.array(limitSizeStream.obj(new Instagram.InstagramPosts({username: user}), count));
 
-const getPosts = (user, opts) => {
-	const stream = new Instagram.InstagramPosts({username: user});
-	return getStream.array(limitSizeStream.obj(stream, opts.count));
-};
+module.exports = (user, opts) => {
+	opts = Object.assign({count: 20}, opts);
 
-module.exports.users = (users, opts) => {
-	opts = Object.assign({
-		count: 20,
-		minEngagement: 0,
-		minFollowers: 0
-	}, opts);
-
-	if (!Array.isArray(users)) {
-		return Promise.reject(new TypeError(`Expected an array, got ${typeof users}`));
+	if (typeof user !== 'string') {
+		return Promise.reject(new TypeError(`Expected a string, got ${typeof user}`));
 	}
 
-	return Promise.all(users.map(x => instagramUser(x).then(user => getPosts(x, opts).then(posts => {
+	return instagramUser(user).then(res => getPosts(user, opts.count).then(posts => {
 		if (posts.length === 0) {
-			return Object.assign(user, {
+			return Object.assign(res, {
 				comments: 0,
-				commentsPerPost: 0,
 				engagement: 0,
+				frequency: 0,
 				likes: 0,
-				likesPerPost: 0,
-				postsPerDay: 0,
-				postsPerWeek: 0
+				posts: posts.length
 			});
 		}
 
@@ -51,28 +36,12 @@ module.exports.users = (users, opts) => {
 			likes += x.likes;
 		}
 
-		return Object.assign(user, {
+		return Object.assign(res, {
 			comments,
-			commentsPerPost: comments / posts.length,
-			engagement: ((comments + likes) / posts.length) / user.followers,
+			engagement: ((comments + likes) / posts.length) / res.followers,
+			frequency: msTo(Math.floor((first.time * 1000) - (last.time * 1000)) / posts.length),
 			likes,
-			likesPerPost: likes / posts.length,
-			postsPerDay: posts.length / new DateDiff(new Date(first.time * 1000), new Date(last.time * 1000)).days(),
-			postsPerWeek: posts.length / new DateDiff(new Date(first.time * 1000), new Date(last.time * 1000)).weeks()
+			posts: posts.length
 		});
-	})))).then(users => users.filter(x => x.engagement >= opts.minEngagement && x.followers >= opts.minFollowers));
-};
-
-module.exports.post = (id, opts) => {
-	opts = Object.assign({
-		count: 20,
-		minEngagement: 0,
-		minFollowers: 0
-	}, opts);
-
-	if (typeof id !== 'string') {
-		return Promise.reject(new TypeError(`Expected a string, got ${typeof id}`));
-	}
-
-	return getComments(id).then(users => module.exports.users(users, opts));
+	}));
 };
