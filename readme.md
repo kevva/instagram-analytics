@@ -39,7 +39,7 @@ instagramAnalytics('foobar').then(stats => {
 
 Type: `string`
 
-Returns a promise for a user stats object with:
+Returns a Promise for a user stats object with:
 
 * `comments`: Total number of comments
 * `description`: User description

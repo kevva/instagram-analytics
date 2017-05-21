@@ -45,7 +45,7 @@ module.exports = (user, opts) => {
 		});
 	})).catch(err => {
 		if (err.statusCode === 404) {
-			return null;
+			err.message = 'User doesn\'t exist';
 		}
 
 		throw err;
