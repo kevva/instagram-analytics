@@ -6,7 +6,7 @@
 ## Install
 
 ```
-$ npm install --save instagram-analytics
+$ npm install instagram-analytics
 ```
 
 
@@ -39,7 +39,7 @@ instagramAnalytics('foobar').then(stats => {
 
 Type: `string`
 
-Returns a Promise for a user stats object with:
+Returns a `Promise` for a user stats object with:
 
 * `comments`: Total number of comments
 * `description`: User description
@@ -57,6 +57,8 @@ Returns a Promise for a user stats object with:
 * `website`: User website
 
 #### options
+
+Type: `Object`
 
 ##### count
 

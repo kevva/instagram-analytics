@@ -1,5 +1,5 @@
 import test from 'ava';
-import m from './';
+import m from '.';
 
 test('fetch user stats', async t => {
 	const cats = await m('cats');
