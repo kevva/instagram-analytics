@@ -10,7 +10,7 @@
 		"url": "github.com/kevva"
 	},
 	"engines": {
-		"node": ">=4"
+		"node": ">=10"
 	},
 	"scripts": {
 		"test": "xo && ava"
@@ -24,13 +24,12 @@
 		"stats"
 	],
 	"dependencies": {
-		"get-stream": "^3.0.0",
-		"got": "^8.3.2",
-		"instagram-posts": "^1.0.1",
+		"instagram-posts": "^2.0.0",
+		"instagram-user": "^2.0.0",
 		"ms-to": "^1.0.0"
 	},
 	"devDependencies": {
-		"ava": "^0.25.0",
-		"xo": "^0.20.3"
+		"ava": "^2.4.0",
+		"xo": "^0.24.0"
 	}
 }
