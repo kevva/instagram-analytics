@@ -24,7 +24,7 @@ const instagramAnalytics = require('instagram-analytics');
 		email: 'foobar@gmail.com',
 		engagement: 0.02,
 		followers: 821,
-		...
+		…
 	}
 	*/
 })();
