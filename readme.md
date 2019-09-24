@@ -15,8 +15,8 @@ $ npm install instagram-analytics
 ```js
 const instagramAnalytics = require('instagram-analytics');
 
-instagramAnalytics('foobar').then(stats => {
-	console.log(stats);
+(async () => {
+	console.log(await instagramAnalytics('foobar'));
 	/*
 	{
 		comments: 351,
@@ -27,19 +27,15 @@ instagramAnalytics('foobar').then(stats => {
 		...
 	}
 	*/
-});
+})();
 ```
 
 
 ## API
 
-### instagramAnalytics(user, [options])
+### instagramAnalytics(user, options?)
 
-#### user
-
-Type: `string`
-
-Returns a `Promise` for a user stats object with:
+Returns a `Promise<Object>` for user stats with the following:
 
 * `comments`: Total number of comments
 * `description`: User description
@@ -56,6 +52,12 @@ Returns a `Promise` for a user stats object with:
 * `username`: Same username as supplied
 * `website`: User website
 
+#### user
+
+Type: `string`
+
+Username to fetch stats from.
+
 #### options
 
 Type: `Object`
@@ -66,8 +68,3 @@ Type: `number`<br>
 Default: `20`
 
 Number of posts to fetch.
-
-
-## License
-
-MIT © [Kevin Mårtensson](https://github.com/kevva)

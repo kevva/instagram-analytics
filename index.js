@@ -13,23 +13,23 @@ const transformUser = user => Object.assign(user, {
 	website: user.external_url
 });
 
-module.exports = (user, opts) => {
-	opts = Object.assign({count: 20}, opts);
+module.exports = (username, options) => {
+	options = Object.assign({count: 20}, options);
 
-	if (typeof user !== 'string') {
-		return Promise.reject(new TypeError(`Expected a string, got ${typeof user}`));
+	if (typeof username !== 'string') {
+		return Promise.reject(new TypeError(`Expected \`username\` to be of type \`string\` but received type \`${typeof username}\``));
 	}
 
-	return got(`https://instagram.com/${user}`, {
+	return got(`https://instagram.com/${username}`, {
 		json: true,
 		query: {__a: 1}
 	})
-		.then(response => instagramPosts(user, {count: opts.count})
+		.then(response => instagramPosts(username, {count: options.count})
 			.then(posts => {
-				const currentUser = transformUser(response.body.graphql.user);
+				const user = transformUser(response.body.graphql.user);
 
 				if (posts.length === 0) {
-					return Object.assign(currentUser, {
+					return Object.assign(user, {
 						comments: 0,
 						engagement: 0,
 						frequency: 0,
@@ -49,19 +49,19 @@ module.exports = (user, opts) => {
 					likes += x.likes;
 				}
 
-				return Object.assign(currentUser, {
+				return Object.assign(user, {
 					comments,
-					engagement: ((comments + likes) / posts.length) / currentUser.followers,
+					engagement: ((comments + likes) / posts.length) / user.followers,
 					frequency: msTo(Math.floor((first.time * 1000) - (last.time * 1000)) / posts.length),
 					likes,
 					posts: posts.length
 				});
 			}))
-		.catch(err => {
-			if (err.statusCode === 404) {
-				err.message = 'User doesn\'t exist';
+		.catch(error => {
+			if (error.statusCode === 404) {
+				error.message = 'User doesn\'t exist';
 			}
 
-			throw err;
+			throw error;
 		});
 };
