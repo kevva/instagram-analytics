@@ -7,7 +7,7 @@ test('fetch user stats', async t => {
 
 	t.is(err.message, 'Expected a string, got number');
 	t.is(cats.username, 'cats');
-	t.is(cats.url, 'http://instagram.com/cats');
+	t.is(cats.url, 'https://instagram.com/cats');
 });
 
 test('count option', async t => {
