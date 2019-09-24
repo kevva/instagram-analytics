@@ -3,7 +3,7 @@ import instagramAnalytics from '.';
 
 test('fetch user stats', async t => {
 	const cats = await instagramAnalytics('cats');
-	const err = await t.throws(instagramAnalytics(123), TypeError);
+	const err = await t.throwsAsync(instagramAnalytics(123), TypeError);
 
 	t.is(err.message, 'Expected `username` to be of type `string` but received type `number`');
 	t.is(cats.username, 'cats');
@@ -16,5 +16,5 @@ test('count option', async t => {
 });
 
 test('show helpful error when user doesn\'t exist', async t => {
-	await t.throws(instagramAnalytics('non_existing_user_foo_bar'), 'User doesn\'t exist');
+	await t.throwsAsync(instagramAnalytics('non_existing_user_foo_bar'), 'User doesn\'t exist');
 });

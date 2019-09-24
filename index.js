@@ -1,67 +1,55 @@
 'use strict';
-const got = require('got');
 const instagramPosts = require('instagram-posts');
+const instagramUser = require('instagram-user');
 const msTo = require('ms-to');
 
-const transformUser = user => Object.assign(user, {
-	description: user.biography,
-	followers: user.edge_followed_by.count,
-	following: user.edge_follow.count,
-	fullName: user.full_name,
-	posts: user.edge_owner_to_timeline_media.count,
-	url: `https://instagram.com/${user.username}`,
-	website: user.external_url
-});
-
-module.exports = (username, options) => {
-	options = Object.assign({count: 20}, options);
+module.exports = async (username, options) => {
+	options = {count: 20, ...options};
 
 	if (typeof username !== 'string') {
-		return Promise.reject(new TypeError(`Expected \`username\` to be of type \`string\` but received type \`${typeof username}\``));
+		throw new TypeError(`Expected \`username\` to be of type \`string\` but received type \`${typeof username}\``);
 	}
 
-	return got(`https://instagram.com/${username}`, {
-		json: true,
-		query: {__a: 1}
-	})
-		.then(response => instagramPosts(username, {count: options.count})
-			.then(posts => {
-				const user = transformUser(response.body.graphql.user);
+	try {
+		const [user, posts] = await Promise.all([
+			instagramUser(username),
+			instagramPosts(username, {count: options.count})
+		]);
 
-				if (posts.length === 0) {
-					return Object.assign(user, {
-						comments: 0,
-						engagement: 0,
-						frequency: 0,
-						likes: 0,
-						posts: posts.length
-					});
-				}
+		let comments = 0;
+		let likes = 0;
 
-				const first = posts[0];
-				const last = posts[posts.length - 1];
+		if (posts.length === 0) {
+			return {
+				...user,
+				comments,
+				engagement: 0,
+				frequency: 0,
+				likes,
+				posts: posts.length
+			};
+		}
 
-				let comments = 0;
-				let likes = 0;
+		const [firstPost, lastPost] = [posts[0], posts[posts.length - 1]];
 
-				for (const x of posts) {
-					comments += x.comments;
-					likes += x.likes;
-				}
+		for (const post of posts) {
+			comments += post.comments;
+			likes += post.likes;
+		}
 
-				return Object.assign(user, {
-					comments,
-					engagement: ((comments + likes) / posts.length) / user.followers,
-					frequency: msTo(Math.floor((first.time * 1000) - (last.time * 1000)) / posts.length),
-					likes,
-					posts: posts.length
-				});
-			}))
-		.catch(error => {
-			if (error.statusCode === 404) {
-				error.message = 'User doesn\'t exist';
-			}
+		return {
+			...user,
+			comments,
+			engagement: ((comments + likes) / posts.length) / user.followers,
+			frequency: msTo(Math.floor((firstPost.time * 1000) - (lastPost.time * 1000)) / posts.length),
+			likes,
+			posts: posts.length
+		};
+	} catch (error) {
+		if (error.statusCode === 404) {
+			error.message = 'User doesn\'t exist';
+		}
 
-			throw error;
-		});
+		throw error;
+	}
 };
