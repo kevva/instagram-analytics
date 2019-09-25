@@ -16,5 +16,5 @@ test('count option', async t => {
 });
 
 test('show helpful error when user doesn\'t exist', async t => {
-	await t.throwsAsync(instagramAnalytics('non_existing_user_foo_bar'), 'User doesn\'t exist');
+	await t.throwsAsync(instagramAnalytics('non_existing_user_foo_bar'), 'User "non_existing_user_foo_bar" not found');
 });

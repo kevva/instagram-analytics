@@ -46,8 +46,8 @@ module.exports = async (username, options) => {
 			posts: posts.length
 		};
 	} catch (error) {
-		if (error.statusCode === 404) {
-			error.message = 'User doesn\'t exist';
+		if (error.response.statusCode === 404) {
+			error.message = `User "${username}" not found`;
 		}
 
 		throw error;
